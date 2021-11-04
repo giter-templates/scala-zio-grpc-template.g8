@@ -1,0 +1,1 @@
+# scala-zio-grpc-template.g8
