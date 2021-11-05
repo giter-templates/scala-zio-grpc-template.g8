@@ -1,8 +1,8 @@
 package $package$.client
 
 import $package$.instrumentation.{Metrics, Tracing}
-import $package$.protobuf.service.ping_service.PingRequest
-import $package$.protobuf.service.ping_service.ZioPingService.PingServiceClient
+import $package$.protobuf.service.PingRequest
+import $package$.protobuf.service.ZioService.PingServiceClient
 import io.grpc.ManagedChannelBuilder
 import io.jaegertracing.internal.JaegerTracer
 import scalapb.zio_grpc.ZManagedChannel
@@ -13,11 +13,10 @@ import zio.duration._
 object Main extends zio.App {
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = (for {
     client <- ZIO.service[PingServiceClient.ZService[Any, Any]]
-    _ <- program(client).repeat(Schedule.spaced(1.seconds)).forever
+    _ <- program(client).repeat(Schedule.spaced(1.seconds)).forever.tapError(err => ZIO.effect(println(err)))
   } yield ())
     .provideCustomLayer(
-      Console.live ++ Metrics.live >>> Metrics.httpExporter ++ Tracing
-        .jaeger("grpc-client") >>> client
+      Console.live ++ Metrics.live >>> Metrics.httpExporter ++ Tracing.jaeger("grpc-client") >>> client
     )
     .exitCode
 

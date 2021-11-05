@@ -3,19 +3,17 @@ package $package$.instrumentation
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.HTTPServer
 import zio._
-import zio.metrics.prometheus.Registry
 
 import java.net.InetSocketAddress
 
 object Metrics {
   type HttpExporter = Has[HTTPServer]
 
-  val live: ZLayer[Any, Nothing, Registry] = Registry.live
+  val live: ZLayer[Any, Nothing, Has[CollectorRegistry]] = ZLayer.succeed(CollectorRegistry.defaultRegistry)
 
-  val httpExporter: ZLayer[Registry, Nothing, HttpExporter] =
+  val httpExporter: ZLayer[Has[CollectorRegistry], Nothing, HttpExporter] =
     (for {
-      prometheus <- ZIO.service[Registry.Service].toManaged_
-      registry <- prometheus.getCurrent().toManaged_
+      registry <- ZIO.service[CollectorRegistry].toManaged_
       server <- makeHttpServer(registry)
     } yield server).toLayer.orDie
 

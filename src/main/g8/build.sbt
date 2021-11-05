@@ -65,12 +65,12 @@ lazy val commonSettings = Seq(
   )
 )
 
-lazy val $name$ =
+lazy val sample =
   project
     .in(file("."))
     .settings(buildSettings)
     .settings(noPublish)
-    .settings(moduleName := "$name$")
+    .settings(moduleName := "sample")
     .aggregate(protobuf, client, server)
 
 lazy val protobuf =
@@ -78,10 +78,11 @@ lazy val protobuf =
     .in(file("modules/protobuf"))
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "$name$-protobuf")
+    .settings(moduleName := "sample-protobuf")
     .settings(
       Compile / PB.targets := Seq(
-        scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
+        scalapb.gen(grpc = true) -> (Compile / sourceManaged).value / "scalapb",
+        scalapb.zio_grpc.ZioCodeGenerator -> (Compile / sourceManaged).value / "scalapb"
       ),
       libraryDependencies ++= Seq(
         grpcNetty,
@@ -96,7 +97,7 @@ lazy val instrumentation =
     .enablePlugins(JavaAppPackaging, DockerPlugin)
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "$name$-instrumentation")
+    .settings(moduleName := "sample-instrumentation")
     .settings(
       libraryDependencies ++= Seq(
         prometheus,
@@ -112,10 +113,10 @@ lazy val client =
     .enablePlugins(JavaAppPackaging, DockerPlugin)
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "$name$-client")
+    .settings(moduleName := "sample-client")
     .settings(
       dockerBaseImage := "openjdk:11-jre-slim",
-      Docker / packageName := "$name$-client",
+      Docker / packageName := "sample-client",
       Docker / version := "latest"
     )
     .dependsOn(protobuf, instrumentation)
@@ -126,10 +127,10 @@ lazy val server =
     .enablePlugins(JavaAppPackaging, DockerPlugin)
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "$name$-server")
+    .settings(moduleName := "sample-server")
     .settings(
       dockerBaseImage := "openjdk:11-jre-slim",
-      Docker / packageName := "$name$-server",
+      Docker / packageName := "sample-server",
       Docker / version := "latest"
     )
     .dependsOn(protobuf, instrumentation)

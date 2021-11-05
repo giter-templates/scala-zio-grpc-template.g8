@@ -1,6 +1,6 @@
 package $package$.server
 
-import common.{Metrics, Tracing}
+import $package$.instrumentation.{Metrics, Tracing}
 import io.grpc.ServerBuilder
 import io.jaegertracing.internal.JaegerTracer
 import scalapb.zio_grpc.{ServerLayer, ServiceList}
