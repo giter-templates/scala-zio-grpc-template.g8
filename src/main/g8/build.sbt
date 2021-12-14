@@ -65,12 +65,12 @@ lazy val commonSettings = Seq(
   )
 )
 
-lazy val sample =
+lazy val $name$ =
   project
     .in(file("."))
     .settings(buildSettings)
     .settings(noPublish)
-    .settings(moduleName := "sample")
+    .settings(moduleName := "$name$")
     .aggregate(protobuf, client, server)
 
 lazy val protobuf =
@@ -78,7 +78,7 @@ lazy val protobuf =
     .in(file("modules/protobuf"))
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "sample-protobuf")
+    .settings(moduleName := "$name$-protobuf")
     .settings(
       Compile / PB.targets := Seq(
         scalapb.gen(grpc = true) -> (Compile / sourceManaged).value / "scalapb",
@@ -97,7 +97,7 @@ lazy val instrumentation =
     .enablePlugins(JavaAppPackaging, DockerPlugin)
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "sample-instrumentation")
+    .settings(moduleName := "$name$-instrumentation")
     .settings(
       libraryDependencies ++= Seq(
         prometheus,
@@ -113,10 +113,10 @@ lazy val client =
     .enablePlugins(JavaAppPackaging, DockerPlugin)
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "sample-client")
+    .settings(moduleName := "$name$-client")
     .settings(
       dockerBaseImage := "openjdk:11-jre-slim",
-      Docker / packageName := "sample-client",
+      Docker / packageName := "$name$-client",
       Docker / version := "latest"
     )
     .dependsOn(protobuf, instrumentation)
@@ -127,10 +127,10 @@ lazy val server =
     .enablePlugins(JavaAppPackaging, DockerPlugin)
     .settings(buildSettings)
     .settings(commonSettings)
-    .settings(moduleName := "sample-server")
+    .settings(moduleName := "$name$-server")
     .settings(
       dockerBaseImage := "openjdk:11-jre-slim",
-      Docker / packageName := "sample-server",
+      Docker / packageName := "$name$-server",
       Docker / version := "latest"
     )
     .dependsOn(protobuf, instrumentation)

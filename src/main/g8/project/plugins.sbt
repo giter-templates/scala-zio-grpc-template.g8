@@ -1,6 +1,6 @@
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.3")
-addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.9.2")
-addSbtPlugin("com.thesamet" % "sbt-protoc" % "1.0.3")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "$sbt_scalafmt_plugin_version$")
+addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "$sbt_native_packager_plugin_version$")
+addSbtPlugin("com.thesamet" % "sbt-protoc" % "$sbt_protoc_plugin_version$")
 
-libraryDependencies ++= Seq("com.thesamet.scalapb.zio-grpc" %% "zio-grpc-codegen" % "0.5.0")
+libraryDependencies ++= Seq("com.thesamet.scalapb.zio-grpc" %% "zio-grpc-codegen" % "$zio_codegen_plugin_version$")
 
