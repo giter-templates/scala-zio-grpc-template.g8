@@ -14,6 +14,7 @@ zio-grpc template with basic metrics (prometheus) and tracing (jaeger).
 - prometheus-simpleclient:0.11.0
 - prometheus-simpleclient-httpserver:0.11.0
 - jaeger-client:1.6.0
+- zio-config:1.0.5
 
 ## Usage
 ```shell

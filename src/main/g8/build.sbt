@@ -58,6 +58,9 @@ lazy val noPublish = Seq(
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
+    zioConfig,
+    zioConfigMagnolia,
+    zioConfigTypesafe,
     scalaTest % Test
   ),
   addCompilerPlugin(

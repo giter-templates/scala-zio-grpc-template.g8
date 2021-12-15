@@ -1,6 +1,6 @@
 package $package$.server
 
-import $package$.instrumentation.{Metrics, Tracing}
+import $package$.instrumentation.{Metrics, Tracing, InstrumentationConfiguration}
 import io.grpc.ServerBuilder
 import io.jaegertracing.internal.JaegerTracer
 import scalapb.zio_grpc.{ServerLayer, ServiceList}
@@ -11,14 +11,20 @@ object Main extends zio.App {
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = (
     for {
       tracer <- ZIO.service[JaegerTracer]
-      _ <- server(tracer).useForever
+      configuration <- ZIO.service[Configuration]
+      _ <- server(tracer, configuration).useForever
     } yield ()
-  ).provideCustomLayer(
-    Console.live ++ Metrics.live >+> Metrics.httpExporter ++ Tracing.jaeger("grpc_server")
-  ).exitCode
+  ).provideCustomLayer {
+    val serverConfig = Configuration.layer
+    val instrumentationConfig = InstrumentationConfiguration.layer
+    val metrics = (instrumentationConfig ++ Metrics.live) >+> Metrics.httpExporter
+    val tracing = instrumentationConfig >>> Tracing.jaeger
 
-  private def server(jaeger: JaegerTracer) = {
-    val builder: ServerBuilder[_] = ServerBuilder.forPort(8080)
+    serverConfig ++ Console.live ++ metrics ++ tracing
+  }.exitCode
+
+  private def server(jaeger: JaegerTracer, configuration: Configuration) = {
+    val builder: ServerBuilder[_] = ServerBuilder.forPort(configuration.server.port)
     val pingService = new PingServiceLive()
 
     builder.intercept(new MeteredServerInterceptor)

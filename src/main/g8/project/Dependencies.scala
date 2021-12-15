@@ -7,6 +7,7 @@ object Dependencies {
     lazy val jaegerVersion = "1.6.0"
     lazy val prometheusVersion = "0.11.0"
     lazy val scalatestVersion = "3.2.8"
+    lazy val zioVersion = "1.0.5"
   }
 
   lazy val scalaTest = "org.scalatest" %% "scalatest" % versions.scalatestVersion
@@ -18,4 +19,7 @@ object Dependencies {
     "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf"
   lazy val scalapbRuntimeGrpc =
     "com.thesamet.scalapb" %% "scalapb-runtime-grpc" % scalapb.compiler.Version.scalapbVersion
+  lazy val zioConfig = "dev.zio" %% "zio-config" % versions.zioVersion
+  lazy val zioConfigMagnolia = "dev.zio" %% "zio-config-magnolia" % versions.zioVersion
+  lazy val zioConfigTypesafe = "dev.zio" %% "zio-config-typesafe" % versions.zioVersion
 }
